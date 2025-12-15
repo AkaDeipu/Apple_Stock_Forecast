@@ -31,6 +31,7 @@ class LSTMForecastWrapper(BaseEstimator, RegressorMixin):
         for _ in range(self.horizon):
             pred = self.model.predict(current_seq.reshape(1,self.lookback,1))
             predictions.append(pred[0][0])
+            current_seq = np.append(current_seq[1:], pred[0][0])
 
         predictions = self.scaler.inverse_transform(np.array(predictions).reshape(-1,1))
         return predictions.flatten().tolist()
