@@ -13,8 +13,10 @@ class ForecastRequest(BaseModel):
 
 @app.post("/predict")
 def predict(request: ForecastRequest):
-    preds = pipeline.named_steps['lstm_forecast'].predict(
-        request.data, horizon=request.horizon
-    )
-    return {"predictions": preds}
+    try:
+        preds = pipeline.named_steps['lstm_forecast'].predict(
+        request.data, horizon=request.horizon)
+        return {"predictions": preds}
+    except Exception as e:
+        return {"error": str(e)}
 
