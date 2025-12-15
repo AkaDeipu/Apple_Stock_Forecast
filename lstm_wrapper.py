@@ -15,11 +15,13 @@ class LSTMForecastWrapper(BaseEstimator, RegressorMixin):
     def fit(self, X, y= None):
         return self
     
-    def predict(self, X):
+    def predict(self, X, horizon = None):
         scaled = self.scaler.fit_transform(np.array(X).reshape(-1,1))
 
         if len(scaled)<self.lookback:
             print(f"Need atleast {self.lookback} data points")
+        if horizon:
+            self.horizon = horizon
 
         seq = scaled[-self.lookback:,0]
         predictions = []
