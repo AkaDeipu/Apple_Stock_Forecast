@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>🍏 Apple Stock Forecast</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background: #f5f7fa;
+        }
+        h1 {
+            color: #2c3e50;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            max-width: 500px;
+        }
+        label {
+            display: block;
+            margin-top: 15px;
+            font-weight: bold;
+        }
+        input, textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            margin-top: 20px;
+            padding: 10px 15px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background: #219150;
+        }
+        .result {
+            margin-top: 30px;
+            padding: 15px;
+            background: #ecf0f1;
+            border-radius: 6px;
+        }
+    </style>
+</head>
+<body>
+    <h1>🍏 Apple Stock Forecast</h1>
+    <p>Enter your input data as JSON and choose the forecast horizon.</p>
+
+    <form id="forecastForm">
+        <label for="data">Input Data (JSON list):</label>
+        <textarea id="data" name="data" rows="5">[150, 152, 153, 155]</textarea>
+
+        <label for="horizon">Forecast Horizon (days):</label>
+        <input type="number" id="horizon" name="horizon" value="7">
+
+        <button type="submit">Get Forecast</button>
+    </form>
+
+    <div id="result" class="result" style="display:none;">
+        <h3>Predictions:</h3>
+        <pre id="predictions"></pre>
+    </div>
+
+    <script>
+        document.getElementById("forecastForm").addEventListener("submit", async function(e) {
+            e.preventDefault();
+            const dataInput = document.getElementById("data").value;
+            const horizonInput = document.getElementById("horizon").value;
+
+            try {
+                const response = await fetch("/predict", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        data: JSON.parse(dataInput),
+                        horizon: parseInt(horizonInput)
+                    })
+                });
+                const result = await response.json();
+                document.getElementById("result").style.display = "block";
+                document.getElementById("predictions").textContent = JSON.stringify(result, null, 2);
+            } catch (err) {
+                alert("Error: " + err.message);
+            }
+        });
+    </script>
+</body>
+</html>
